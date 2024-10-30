@@ -19,45 +19,20 @@ personagem_o = fonte_quadrinhos.render('O', True, 'red')
 jogador_atual = personagem_x #inicializa o jogo com o X
 
 rodadas = 0
+tabuleiro_desenhado = False
 coordenada_x = 0
 coordenada_y = 0
-
-while running:
-    # controle de enventos no jgo
-    for event in pygame.event.get():
-        # pygame.QUIT significa que quando usuário clicar em X a tela fechará
-          if event.type == pygame.QUIT:
-            running = False
-        # pygame.MOUSEBUTTONDOWN significa evento de click do mouse
-          if event.type == pygame.MOUSEBUTTONDOWN:
-               print('Clicou')
-               click_pos = pygame.mouse.get_pos() # a posição do mouse quando houve o evento de click
-               print('eixo X:', click_pos[0])
-               print('eixo Y:', click_pos[1])
-               coordenada_x = click_pos[0]
-               coordenada_y = click_pos[1]
-               rodadas = rodadas + 1
-
-               if rodadas >= 10:
-                    screen.fill('black') 
-                    rodadas = 0
-
-               if rodadas != 1:
-                    if jogador_atual == personagem_x:
-                        jogador_atual = personagem_o
-                    else:
-                        jogador_atual = personagem_x
-               else:
-                    jogador_atual = personagem_x
-          
+def desenha_tabuleiro(espessura, cor):
+    print('desenha')
     #Desenha tabuleiro
     #                                  origem      destino    
     #                                ( x , y)   ( x , y ) 
-    pygame.draw.line(screen, 'white',(200, 0), (200, 600), 10)
-    pygame.draw.line(screen, 'white',(400, 0), (400, 600), 10)
-    pygame.draw.line(screen, 'white',(0, 200), (600, 200), 10)
-    pygame.draw.line(screen, 'white',(0, 400), (600, 400), 10)
+    pygame.draw.line(screen, cor,(200, 0), (200, 600), espessura)
+    pygame.draw.line(screen, cor,(400, 0), (400, 600), espessura)
+    pygame.draw.line(screen, cor,(0, 200), (600, 200), espessura)
+    pygame.draw.line(screen, cor,(0, 400), (600, 400), espessura)
 
+def faz_jogada():
     if coordenada_x > 0 and coordenada_x < 200 and coordenada_y < 200:
         screen.blit(jogador_atual,(60,30))  #primeiro
 
@@ -86,9 +61,55 @@ while running:
         screen.blit(jogador_atual,(460,430)) #nono
 
 
+
+while running:
+    # controle de enventos no jgo
+    for event in pygame.event.get():
+        # pygame.QUIT significa que quando usuário clicar em X a tela fechará
+          if event.type == pygame.QUIT:
+            running = False
+        # pygame.MOUSEBUTTONDOWN significa evento de click do mouse
+          if event.type == pygame.MOUSEBUTTONDOWN:
+               print('Clicou')
+               click_pos = pygame.mouse.get_pos() # a posição do mouse quando houve o evento de click
+               print('eixo X:', click_pos[0])
+               print('eixo Y:', click_pos[1])
+               coordenada_x = click_pos[0]
+               coordenada_y = click_pos[1]
+               rodadas = rodadas + 1
+
+               if rodadas >= 10:
+                    screen.fill('black') 
+                    rodadas = 0
+                    coordenada_x = 0
+                    coordenada_y = 0
+                    tabuleiro_desenhado = False
+                
+
+               if rodadas != 1:
+                    if jogador_atual == personagem_x:
+                        jogador_atual = personagem_o
+                    else:
+                        jogador_atual = personagem_x
+               else:
+                    jogador_atual = personagem_x
+
+               faz_jogada()
+
+    if tabuleiro_desenhado == False:
+        desenha_tabuleiro(50, 'yellow')
+        tabuleiro_desenhado = True
+        
+
+
+    
+
     # flip() o display para atualizar a página
     pygame.display.flip()
 
     clock.tick(60)  # limita o fps para 60
 
+
 pygame.quit()
+
+
